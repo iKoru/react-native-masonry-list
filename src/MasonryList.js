@@ -1,11 +1,14 @@
-import PropTypes from "prop-types";
 import React from "react";
-import { Animated, InteractionManager } from "react-native";
-import Column from "./Column";
+import { Animated, FlatList, InteractionManager } from "react-native";
+import PropTypes from "prop-types";
+
 import { resolveImage, resolveLocal } from "./lib/model";
-import { sequence } from "./lib/monad-basic";
 import Task from "./lib/task";
-import { getImageSource, getImageUri, getItemSource, insertIntoColumn, setItemSource } from "./utils";
+import { sequence } from "./lib/monad-basic";
+
+import Column from "./Column";
+
+import { getItemSource, setItemSource, getImageSource, getImageUri, insertIntoColumn } from "./utils";
 
 export default class MasonryList extends React.PureComponent {
   _calculatedData = [];
@@ -225,7 +228,7 @@ export default class MasonryList extends React.PureComponent {
       return columnIndex;
     }
 
-    if (images && itemSource.length > 0) {
+    if (images && itemSource && itemSource.length > 0) {
       const resolveImages = images.map((item) => {
         const image = getItemSource(item, itemSource);
         const source = getImageSource(image);
@@ -233,13 +236,6 @@ export default class MasonryList extends React.PureComponent {
 
         if (source) {
           image.source = source;
-        } else {
-          /* eslint-disable no-console */
-          console.warn(
-            "react-native-masonry-list",
-            "Please provide a valid image field in " + "data images. Ex. source, uri, URI, url, URL"
-          );
-          /* eslint-enable no-console */
         }
 
         if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -253,9 +249,7 @@ export default class MasonryList extends React.PureComponent {
         if (uri) {
           return resolveImage(uri, image, item, itemSource);
         } else {
-          /* eslint-disable no-console */
-          console.warn("react-native-masonry-list", "Please provide dimensions for your local images.");
-          /* eslint-enable no-console */
+          resolveLocal(image, item, itemSource);
         }
       });
       if (sorted) {
@@ -390,13 +384,6 @@ export default class MasonryList extends React.PureComponent {
 
         if (source) {
           image.source = source;
-        } else {
-          /* eslint-disable no-console */
-          console.warn(
-            "react-native-masonry-list",
-            "Please provide a valid image field in " + "data images. Ex. source, uri, URI, url, URL"
-          );
-          /* eslint-enable no-console */
         }
 
         if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -410,9 +397,7 @@ export default class MasonryList extends React.PureComponent {
         if (uri) {
           return resolveImage(uri, image);
         } else {
-          /* eslint-disable no-console */
-          console.warn("react-native-masonry-list", "Please provide dimensions for your local images.");
-          /* eslint-enable no-console */
+          return resolveImage("", image);
         }
       });
       if (sorted) {
