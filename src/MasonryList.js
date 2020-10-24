@@ -180,6 +180,7 @@ export default class MasonryList extends React.PureComponent {
 
   _getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
     const countDecimals = function (value) {
+      4;
       if (Math.floor(value) === value) {
         return 0;
       }
@@ -401,6 +402,12 @@ export default class MasonryList extends React.PureComponent {
         }
       });
       if (sorted) {
+        if (resolveImages.length === 0) {
+          this.setState({ _sortedData: [] });
+          if (this.props.onImagesResolveEnd) {
+            this.props.onImagesResolveEnd(this.state._sortedData, 0);
+          }
+        }
         sequence(
           Task,
           resolveImages.map((resolveTask) => {
@@ -463,6 +470,12 @@ export default class MasonryList extends React.PureComponent {
           }
         );
       } else {
+        if (resolveImages.length === 0) {
+          this.setState({ _sortedData: [] });
+          if (this.props.onImagesResolveEnd) {
+            this.props.onImagesResolveEnd(this.state._sortedData, 0);
+          }
+        }
         resolveImages.map((resolveTask) => {
           if (resolveTask && resolveTask.fork) {
             resolveTask.fork(
