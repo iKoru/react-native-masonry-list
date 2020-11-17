@@ -63,18 +63,18 @@ export default class MasonryList extends React.PureComponent {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       if (this.props.containerWidth) {
-        this.resolveImages(
-          this.props.itemSource,
-          this.props.images,
-          this.props.layoutDimensions,
-          this.props.columns,
-          this.props.sorted
-        );
+        // this.resolveImages(
+        //   this.props.itemSource,
+        //   this.props.images,
+        //   this.props.layoutDimensions,
+        //   this.props.columns,
+        //   this.props.sorted
+        // );
       }
     });
   }
 
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = nextProps => {
     if (
       nextProps.layoutDimensions.width &&
       nextProps.layoutDimensions.height &&
@@ -89,13 +89,7 @@ export default class MasonryList extends React.PureComponent {
       this.columnHeightTotals = [];
       this.columnCounting = 1;
       this.columnHighestHeight = null;
-      this.resolveImages(
-        nextProps.itemSource,
-        nextProps.images,
-        nextProps.layoutDimensions,
-        nextProps.columns,
-        nextProps.sorted
-      );
+      this.resolveImages(nextProps.itemSource, nextProps.images, nextProps.layoutDimensions, nextProps.columns, nextProps.sorted);
     } else if (
       nextProps.orientation !== this.props.orientation ||
       nextProps.columns !== this.props.columns ||
@@ -108,13 +102,7 @@ export default class MasonryList extends React.PureComponent {
       this.columnHeightTotals = [];
       this.columnCounting = 1;
       this.columnHighestHeight = null;
-      this.resolveImages(
-        nextProps.itemSource,
-        this._calculatedData,
-        nextProps.layoutDimensions,
-        nextProps.columns,
-        nextProps.sorted
-      );
+      this.resolveImages(nextProps.itemSource, this._calculatedData, nextProps.layoutDimensions, nextProps.columns, nextProps.sorted);
     }
     // else if (nextProps.images !== this.props.images) {
     // 	this.unsortedIndex = 0;
@@ -135,13 +123,7 @@ export default class MasonryList extends React.PureComponent {
       // load more add datasource
       if (nextProps.images.length > this.props.images.length) {
         let newImages = nextProps.images.concat().splice(this.props.images.length, nextProps.images.length); // nextProps.images
-        this.resolveImages(
-          nextProps.itemSource,
-          newImages,
-          nextProps.layoutDimensions,
-          nextProps.columns,
-          nextProps.sorted
-        );
+        this.resolveImages(nextProps.itemSource, newImages, nextProps.layoutDimensions, nextProps.columns, nextProps.sorted);
       }
 
       // pull refresh reset datasource
@@ -152,13 +134,7 @@ export default class MasonryList extends React.PureComponent {
         this.columnCounting = 1;
         this.columnHighestHeight = null;
         // this.renderIndex = 0;
-        this.resolveImages(
-          nextProps.itemSource,
-          nextProps.images,
-          nextProps.layoutDimensions,
-          nextProps.columns,
-          nextProps.sorted
-        );
+        this.resolveImages(nextProps.itemSource, nextProps.images, nextProps.layoutDimensions, nextProps.columns, nextProps.sorted);
       }
     } else {
       if (nextProps.images !== this.props.images) {
@@ -167,13 +143,7 @@ export default class MasonryList extends React.PureComponent {
         this.columnHeightTotals = [];
         this.columnCounting = 1;
         this.columnHighestHeight = null;
-        this.resolveImages(
-          nextProps.itemSource,
-          nextProps.images,
-          nextProps.layoutDimensions,
-          nextProps.columns,
-          nextProps.sorted
-        );
+        this.resolveImages(nextProps.itemSource, nextProps.images, nextProps.layoutDimensions, nextProps.columns, nextProps.sorted);
       }
     }
   };
@@ -214,8 +184,7 @@ export default class MasonryList extends React.PureComponent {
       if (!resolverObj.columnHeightTotals[resolverObj.columnCounting - 1]) {
         resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] = height;
       } else {
-        resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] =
-          resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] + height;
+        resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] + height;
       }
 
       if (!resolverObj.columnHighestHeight) {
@@ -230,7 +199,7 @@ export default class MasonryList extends React.PureComponent {
     }
 
     if (images && itemSource && itemSource.length > 0) {
-      const resolveImages = images.map((item) => {
+      const resolveImages = images.map(item => {
         const image = getItemSource(item, itemSource);
         const source = getImageSource(image);
         const uri = getImageUri(image);
@@ -256,13 +225,13 @@ export default class MasonryList extends React.PureComponent {
       if (sorted) {
         sequence(
           Task,
-          resolveImages.map((resolveTask) => {
+          resolveImages.map(resolveTask => {
             if (resolveTask && resolveTask.fork) {
               return resolveTask;
             }
           })
         ).fork(
-          (err) => {
+          err => {
             // eslint-disable-next-line handle-callback-err, no-console
             console.warn("react-native-masonry-list", "Image failed to load.", err);
 
@@ -271,7 +240,7 @@ export default class MasonryList extends React.PureComponent {
               this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
             }
           },
-          (resolvedImages) => {
+          resolvedImages => {
             resolvedImages.map((resolvedData, index) => {
               const resolvedImage = getItemSource(resolvedData, itemSource);
               if (this.renderIndex !== 0) {
@@ -294,7 +263,7 @@ export default class MasonryList extends React.PureComponent {
               }
 
               if (this.renderIndex !== 0) {
-                this.setState((state) => {
+                this.setState(state => {
                   const sortedData = insertIntoColumn(finalizedData, state._sortedData, sorted);
                   this._calculatedData = this._calculatedData.concat(finalizedData);
                   this.renderIndex++;
@@ -319,10 +288,10 @@ export default class MasonryList extends React.PureComponent {
           }
         );
       } else {
-        resolveImages.map((resolveTask) => {
+        resolveImages.map(resolveTask => {
           if (resolveTask && resolveTask.fork) {
             return resolveTask.fork(
-              (err) => {
+              err => {
                 // eslint-disable-next-line handle-callback-err, no-console
                 console.warn("react-native-masonry-list", "Image failed to load.", err);
 
@@ -331,7 +300,7 @@ export default class MasonryList extends React.PureComponent {
                   this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
                 }
               },
-              (resolvedData) => {
+              resolvedData => {
                 const resolvedImage = getItemSource(resolvedData, itemSource);
 
                 resolvedImage.index = this.unsortedIndex;
@@ -352,7 +321,7 @@ export default class MasonryList extends React.PureComponent {
                 }
 
                 if (this.renderIndex !== 0) {
-                  this.setState((state) => {
+                  this.setState(state => {
                     const sortedData = insertIntoColumn(finalizedData, state._sortedData, sorted);
                     this._calculatedData = this._calculatedData.concat(finalizedData);
                     this.renderIndex++;
@@ -379,7 +348,7 @@ export default class MasonryList extends React.PureComponent {
         });
       }
     } else if (images) {
-      const resolveImages = images.map((image) => {
+      const resolveImages = images.map(image => {
         const source = getImageSource(image);
         const uri = getImageUri(image);
 
@@ -410,13 +379,13 @@ export default class MasonryList extends React.PureComponent {
         }
         sequence(
           Task,
-          resolveImages.map((resolveTask) => {
+          resolveImages.map(resolveTask => {
             if (resolveTask && resolveTask.fork) {
               return resolveTask;
             }
           })
         ).fork(
-          (err) => {
+          err => {
             // eslint-disable-next-line handle-callback-err, no-console
             console.warn("react-native-masonry-list", "Image failed to load.", err);
 
@@ -425,7 +394,7 @@ export default class MasonryList extends React.PureComponent {
               this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
             }
           },
-          (resolvedImages) => {
+          resolvedImages => {
             resolvedImages.map((resolvedImage, index) => {
               if (this.renderIndex !== 0) {
                 index = this.renderIndex;
@@ -445,7 +414,7 @@ export default class MasonryList extends React.PureComponent {
               }
 
               if (this.renderIndex !== 0) {
-                this.setState((state) => {
+                this.setState(state => {
                   const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
                   this._calculatedData = this._calculatedData.concat(resolvedImage);
                   this.renderIndex++;
@@ -476,10 +445,10 @@ export default class MasonryList extends React.PureComponent {
             this.props.onImagesResolveEnd(this.state._sortedData, 0);
           }
         }
-        resolveImages.map((resolveTask) => {
+        resolveImages.map(resolveTask => {
           if (resolveTask && resolveTask.fork) {
             resolveTask.fork(
-              (err) => {
+              err => {
                 // eslint-disable-next-line handle-callback-err, no-console
                 console.warn("react-native-masonry-list", "Image failed to load.", err);
 
@@ -488,7 +457,7 @@ export default class MasonryList extends React.PureComponent {
                   this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
                 }
               },
-              (resolvedImage) => {
+              resolvedImage => {
                 resolvedImage.index = this.unsortedIndex;
                 this.unsortedIndex++;
 
@@ -505,7 +474,7 @@ export default class MasonryList extends React.PureComponent {
                 }
 
                 if (this.renderIndex !== 0) {
-                  this.setState((state) => {
+                  this.setState(state => {
                     const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
                     this._calculatedData = this._calculatedData.concat(resolvedImage);
                     this.renderIndex++;
@@ -535,7 +504,7 @@ export default class MasonryList extends React.PureComponent {
   }
 
   // (info: {distanceFromEnd: number}) => void
-  _onCallEndReach = (info) => {
+  _onCallEndReach = info => {
     if (this.props.masonryFlatListColProps && this.props.masonryFlatListColProps.onEndReached) {
       this.props.masonryFlatListColProps.onEndReached(info);
     } else if (this.props.onEndReached) {
