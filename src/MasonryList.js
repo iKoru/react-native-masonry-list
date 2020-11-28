@@ -1,14 +1,11 @@
-import React from "react";
-import { Animated, FlatList, InteractionManager } from "react-native";
 import PropTypes from "prop-types";
-
-import { resolveImage, resolveLocal } from "./lib/model";
-import Task from "./lib/task";
-import { sequence } from "./lib/monad-basic";
-
+import React from "react";
+import { Animated, InteractionManager } from "react-native";
 import Column from "./Column";
-
-import { getItemSource, setItemSource, getImageSource, getImageUri, insertIntoColumn } from "./utils";
+import { resolveImage, resolveLocal } from "./lib/model";
+import { sequence } from "./lib/monad-basic";
+import Task from "./lib/task";
+import { getImageSource, getImageUri, getItemSource, insertIntoColumn, setItemSource } from "./utils";
 
 export default class MasonryList extends React.PureComponent {
   _calculatedData = [];
@@ -513,7 +510,7 @@ export default class MasonryList extends React.PureComponent {
           },
           this.props.listContainerStyle,
         ]}
-        removeClippedSubviews={true}
+        removeClippedSubviews={false}
         onEndReachedThreshold={this.props.onEndReachedThreshold}
         refreshing={this.props.refreshing}
         onRefresh={this.props.onRefresh}
