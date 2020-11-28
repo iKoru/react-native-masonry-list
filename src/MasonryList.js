@@ -17,6 +17,7 @@ export default class MasonryList extends React.PureComponent {
     itemSource: PropTypes.array,
     images: PropTypes.array.isRequired,
     layoutDimensions: PropTypes.object.isRequired,
+    defaultImageDimensions: PropTypes.object,
     containerWidth: PropTypes.number,
 
     columns: PropTypes.number,
@@ -150,18 +151,15 @@ export default class MasonryList extends React.PureComponent {
 
   _getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
     const countDecimals = function (value) {
-      4;
       if (Math.floor(value) === value) {
         return 0;
       }
       return value.toString().split(".")[1].length || 0;
     };
-
     const divider = imgDimensions.width / columnWidth;
 
     const tempWidth = imgDimensions.width / divider - gutterSize * 1.5 || 0;
     const tempHeight = imgDimensions.height / divider - gutterSize * 1.5 || 0;
-
     const newWidth = countDecimals(tempWidth) > 10 ? parseFloat(tempWidth.toFixed(10)) : tempWidth;
     const newHeight = countDecimals(tempHeight) > 10 ? parseFloat(tempHeight.toFixed(10)) : tempHeight;
 
@@ -217,7 +215,7 @@ export default class MasonryList extends React.PureComponent {
         }
 
         if (uri) {
-          return resolveImage(uri, image, item, itemSource);
+          return resolveImage(uri, image, item, itemSource, this.props.defaultImageDimensions);
         } else {
           resolveLocal(image, item, itemSource);
         }
@@ -365,18 +363,12 @@ export default class MasonryList extends React.PureComponent {
         }
 
         if (uri) {
-          return resolveImage(uri, image);
+          return resolveImage(uri, image, undefined, undefined, this.props.defaultImageDimensions);
         } else {
-          return resolveImage("", image);
+          return resolveImage("", image, undefined, undefined, this.props.defaultImageDimensions);
         }
       });
       if (sorted) {
-        if (resolveImages.length === 0) {
-          this.setState({ _sortedData: [] });
-          if (this.props.onImagesResolveEnd) {
-            this.props.onImagesResolveEnd(this.state._sortedData, 0);
-          }
-        }
         sequence(
           Task,
           resolveImages.map(resolveTask => {
@@ -439,12 +431,6 @@ export default class MasonryList extends React.PureComponent {
           }
         );
       } else {
-        if (resolveImages.length === 0) {
-          this.setState({ _sortedData: [] });
-          if (this.props.onImagesResolveEnd) {
-            this.props.onImagesResolveEnd(this.state._sortedData, 0);
-          }
-        }
         resolveImages.map(resolveTask => {
           if (resolveTask && resolveTask.fork) {
             resolveTask.fork(

@@ -1,8 +1,8 @@
 import { Image } from "react-native";
 import Task from "./task";
-import { setItemSource } from "./../utils";
+import { setItemSource } from "../utils";
 
-export const resolveImage = (uri, image, data, itemSource) => {
+export const resolveImage = (uri, image, data, itemSource, defaultImageDimensions) => {
   if (data && itemSource && itemSource.length > 0) {
     return new Task((reject, resolve) => {
       Image.getSize(
@@ -15,7 +15,7 @@ export const resolveImage = (uri, image, data, itemSource) => {
           });
         },
         () => {
-          image.dimensions = { width: 0, height: 30 };
+          image.dimensions = defaultImageDimensions || { width: 30, height: 30 };
           const resolvedData = setItemSource(data, itemSource, image);
           resolve({
             ...resolvedData,
@@ -37,7 +37,7 @@ export const resolveImage = (uri, image, data, itemSource) => {
           },
         }),
       () => {
-        resolve({ ...image, dimensions: { width: 0, height: 30 } });
+        resolve({ ...image, dimensions: defaultImageDimensions || { width: 30, height: 30 } });
       }
     )
   );
@@ -69,7 +69,7 @@ export const resolveLocal = (image, data, itemSource) => {
           });
           // eslint-disable-next-line no-undef
         },
-        (err) => reject(err)
+        err => reject(err)
       );
     }
     return new Task(
@@ -81,7 +81,7 @@ export const resolveLocal = (image, data, itemSource) => {
         });
         // eslint-disable-next-line no-undef
       },
-      (err) => reject(err)
+      err => reject(err)
     );
   }
   if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -92,7 +92,7 @@ export const resolveLocal = (image, data, itemSource) => {
         });
         // eslint-disable-next-line no-undef
       },
-      (err) => reject(err)
+      err => reject(err)
     );
   }
   if (image.width && image.height) {
@@ -107,7 +107,7 @@ export const resolveLocal = (image, data, itemSource) => {
         });
         // eslint-disable-next-line no-undef
       },
-      (err) => reject(err)
+      err => reject(err)
     );
   }
   return new Task(
@@ -115,6 +115,6 @@ export const resolveLocal = (image, data, itemSource) => {
       resolve({ ...image, dimensions: { width: 0, height: 30 } });
       // eslint-disable-next-line no-undef
     },
-    (err) => reject(err)
+    err => reject(err)
   );
 };
