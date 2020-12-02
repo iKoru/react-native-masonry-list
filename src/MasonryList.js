@@ -236,50 +236,56 @@ export default class MasonryList extends React.PureComponent {
             }
           },
           resolvedImages => {
-            resolvedImages.map((resolvedData, index) => {
-              const resolvedImage = getItemSource(resolvedData, itemSource);
-              if (this.renderIndex !== 0) {
-                index = this.renderIndex;
-              }
-              resolvedData.index = index;
+            if (resolvedImages.length > 0) {
+              resolvedImages.map((resolvedData, index) => {
+                const resolvedImage = getItemSource(resolvedData, itemSource);
+                if (this.renderIndex !== 0) {
+                  index = this.renderIndex;
+                }
+                resolvedData.index = index;
 
-              resolvedImage.masonryDimensions = this._getCalculatedDimensions(
-                resolvedImage.dimensions,
-                layoutDimensions.columnWidth,
-                layoutDimensions.gutterSize
-              );
+                resolvedImage.masonryDimensions = this._getCalculatedDimensions(
+                  resolvedImage.dimensions,
+                  layoutDimensions.columnWidth,
+                  layoutDimensions.gutterSize
+                );
 
-              resolvedData.column = _assignColumns(resolvedImage, columns);
+                resolvedData.column = _assignColumns(resolvedImage, columns);
 
-              let finalizedData = setItemSource(resolvedData, itemSource, resolvedImage);
+                let finalizedData = setItemSource(resolvedData, itemSource, resolvedImage);
 
-              if (this.props.onImageResolved) {
-                finalizedData = this.props.onImageResolved(finalizedData, this.renderIndex) || finalizedData;
-              }
+                if (this.props.onImageResolved) {
+                  finalizedData = this.props.onImageResolved(finalizedData, this.renderIndex) || finalizedData;
+                }
 
-              if (this.renderIndex !== 0) {
-                this.setState(state => {
-                  const sortedData = insertIntoColumn(finalizedData, state._sortedData, sorted);
-                  this._calculatedData = this._calculatedData.concat(finalizedData);
+                if (this.renderIndex !== 0) {
+                  this.setState(state => {
+                    const sortedData = insertIntoColumn(finalizedData, state._sortedData, sorted);
+                    this._calculatedData = this._calculatedData.concat(finalizedData);
+                    this.renderIndex++;
+                    return {
+                      _sortedData: sortedData,
+                    };
+                  });
+                } else {
+                  const sortedData = insertIntoColumn(finalizedData, [], sorted);
+                  this._calculatedData = [finalizedData];
                   this.renderIndex++;
-                  return {
+                  this.setState({
                     _sortedData: sortedData,
-                  };
-                });
-              } else {
-                const sortedData = insertIntoColumn(finalizedData, [], sorted);
-                this._calculatedData = [finalizedData];
-                this.renderIndex++;
-                this.setState({
-                  _sortedData: sortedData,
-                });
-              }
+                  });
+                }
 
-              this.doneTotal++;
-              if (this.props.onImagesResolveEnd && this.doneTotal === this.props.images.length) {
-                this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
-              }
-            });
+                this.doneTotal++;
+                if (this.props.onImagesResolveEnd && this.doneTotal === this.props.images.length) {
+                  this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+                }
+              });
+            } else {
+              this.setState({
+                _sortedData: [],
+              });
+            }
           }
         );
       } else {
@@ -384,47 +390,53 @@ export default class MasonryList extends React.PureComponent {
             }
           },
           resolvedImages => {
-            resolvedImages.map((resolvedImage, index) => {
-              if (this.renderIndex !== 0) {
-                index = this.renderIndex;
-              }
-              resolvedImage.index = index;
+            if (resolvedImages.length > 0) {
+              resolvedImages.map((resolvedImage, index) => {
+                if (this.renderIndex !== 0) {
+                  index = this.renderIndex;
+                }
+                resolvedImage.index = index;
 
-              resolvedImage.masonryDimensions = this._getCalculatedDimensions(
-                resolvedImage.dimensions,
-                layoutDimensions.columnWidth,
-                layoutDimensions.gutterSize
-              );
+                resolvedImage.masonryDimensions = this._getCalculatedDimensions(
+                  resolvedImage.dimensions,
+                  layoutDimensions.columnWidth,
+                  layoutDimensions.gutterSize
+                );
 
-              resolvedImage.column = _assignColumns(resolvedImage, columns);
+                resolvedImage.column = _assignColumns(resolvedImage, columns);
 
-              if (this.props.onImageResolved) {
-                resolvedImage = this.props.onImageResolved(resolvedImage, this.renderIndex) || resolvedImage;
-              }
+                if (this.props.onImageResolved) {
+                  resolvedImage = this.props.onImageResolved(resolvedImage, this.renderIndex) || resolvedImage;
+                }
 
-              if (this.renderIndex !== 0) {
-                this.setState(state => {
-                  const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
-                  this._calculatedData = this._calculatedData.concat(resolvedImage);
+                if (this.renderIndex !== 0) {
+                  this.setState(state => {
+                    const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
+                    this._calculatedData = this._calculatedData.concat(resolvedImage);
+                    this.renderIndex++;
+                    return {
+                      _sortedData: sortedData,
+                    };
+                  });
+                } else {
+                  const sortedData = insertIntoColumn(resolvedImage, [], sorted);
+                  this._calculatedData = [resolvedImage];
                   this.renderIndex++;
-                  return {
+                  this.setState({
                     _sortedData: sortedData,
-                  };
-                });
-              } else {
-                const sortedData = insertIntoColumn(resolvedImage, [], sorted);
-                this._calculatedData = [resolvedImage];
-                this.renderIndex++;
-                this.setState({
-                  _sortedData: sortedData,
-                });
-              }
+                  });
+                }
 
-              this.doneTotal++;
-              if (this.props.onImagesResolveEnd && this.doneTotal === this.props.images.length) {
-                this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
-              }
-            });
+                this.doneTotal++;
+                if (this.props.onImagesResolveEnd && this.doneTotal === this.props.images.length) {
+                  this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+                }
+              });
+            } else {
+              this.setState({
+                _sortedData: [],
+              });
+            }
           }
         );
       } else {
