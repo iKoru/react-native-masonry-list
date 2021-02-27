@@ -44,6 +44,7 @@ class Masonry extends React.PureComponent {
     onEndReachedThreshold: PropTypes.number,
     refreshing: PropTypes.bool,
     onRefresh: PropTypes.func,
+    imageContainerProps: PropTypes.object,
   };
 
   static defaultProps = {
@@ -210,6 +211,7 @@ class Masonry extends React.PureComponent {
           onEndReachedThreshold={this.props.onEndReachedThreshold}
           refreshing={this.props.refreshing}
           onRefresh={this.props.onRefresh}
+          imageContainerProps={this.props.imageContainerProps}
         />
       </View>
     );

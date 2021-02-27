@@ -44,6 +44,7 @@ export default class MasonryList extends React.PureComponent {
     onEndReachedThreshold: PropTypes.number,
     refreshing: PropTypes.bool,
     onRefresh: PropTypes.func,
+    imageContainerProps: PropTypes.object,
   };
 
   state = {
@@ -552,6 +553,7 @@ export default class MasonryList extends React.PureComponent {
               onLongPressImage={this.props.onLongPressImage}
               renderIndividualHeader={this.props.renderIndividualHeader}
               renderIndividualFooter={this.props.renderIndividualFooter}
+              imageContainerProps={this.props.imageContainerProps}
             />
           );
         }}

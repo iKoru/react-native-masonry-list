@@ -26,6 +26,7 @@ export default class Column extends React.PureComponent {
 
     renderIndividualHeader: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     renderIndividualFooter: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    imageContainerProps: PropTypes.object,
   };
 
   _renderItem = ({ item, index }) => {
@@ -93,6 +94,7 @@ export default class Column extends React.PureComponent {
           overflow: "hidden",
           backgroundColor: this.props.backgroundColor,
         }}
+        {...this.props.imageContainerProps}
         key={this.props.colIndex}
         data={this.props.data}
         keyExtractor={(item, index) => {
