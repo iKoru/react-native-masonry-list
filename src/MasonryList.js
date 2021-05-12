@@ -147,7 +147,7 @@ export default class MasonryList extends React.PureComponent {
     }
   };
 
-  _getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
+  _getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 1, gutterSize = 0) {
     const countDecimals = function (value) {
       if (Math.floor(value) === value) {
         return 0;
