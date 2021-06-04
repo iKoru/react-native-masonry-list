@@ -2,13 +2,16 @@ import { Image } from "react-native";
 import Task from "./task";
 import { setItemSource } from "../utils";
 
+const defaultRatio = [1, 1.25, 0.5625];
 export const resolveImage = (uri, image, data, itemSource, defaultImageDimensions) => {
   if (data && itemSource && itemSource.length > 0) {
     return new Task((reject, resolve) => {
       Image.getSize(
         uri,
         (width, height) => {
-          image.dimensions = { width, height };
+          const diff = defaultRatio.map(r => Math.abs(r - height / width));
+          const min = Math.min(...diff);
+          image.dimensions = { width, height: defaultRatio[diff.findIndex(d => d === min)] };
           const resolvedData = setItemSource(data, itemSource, image);
           resolve({
             ...resolvedData,
@@ -28,14 +31,17 @@ export const resolveImage = (uri, image, data, itemSource, defaultImageDimension
   return new Task((reject, resolve) =>
     Image.getSize(
       uri,
-      (width, height) =>
-        resolve({
+      (width, height) => {
+        const diff = defaultRatio.map(r => Math.abs(r - height / width));
+        const min = Math.min(...diff);
+        return resolve({
           ...image,
           dimensions: {
             width,
-            height,
+            height: defaultRatio[diff.findIndex(d => d === min)] * width,
           },
-        }),
+        });
+      },
       () => {
         resolve({ ...image, dimensions: defaultImageDimensions || { width: 30, height: 30 } });
       }
